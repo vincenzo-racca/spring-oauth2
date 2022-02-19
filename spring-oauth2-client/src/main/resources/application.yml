@@ -1,0 +1,37 @@
+server:
+  port: 8082
+  shutdown: graceful
+
+spring:
+  application:
+    name: spring-oauth2-client
+  cloud:
+    gateway:
+      default-filters:
+        - SaveSession
+        - TokenRelay
+      routes:
+        - id: spring-resource-server
+          uri: ${RESOURCE_SERVER:http://localhost:8080}/spring-resource-server
+          predicates:
+            - Path=/spring-resource-server/**
+  security:
+    oauth2:
+      client:
+        registration:
+          wso2:
+            provider: wso2
+            authorization-grant-type: authorization_code
+            client-id: cMEHYsZREl1WMR1CJbzrdv8p6f4a
+            client-secret: 3_ZMPh0TjY0Xz5JOhljtEsEGhzoa
+            redirect-uri: "{baseUrl}/login/oauth2/code/wso2"
+            scope: openid,profile
+        provider:
+          wso2:
+            issuer-uri: ${WSO2IS_URL:https://localhost:9443}/oauth2/token
+
+logging:
+  level:
+    org:
+      springframework:
+        web: debug

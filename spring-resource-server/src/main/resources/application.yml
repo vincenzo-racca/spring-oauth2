@@ -1,0 +1,19 @@
+
+spring:
+  application:
+    name: spring-resource-server
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${WSO2IS_URL:https://localhost:9443}/oauth2/token
+server:
+  servlet:
+    context-path: /spring-resource-server
+  shutdown: graceful
+
+logging:
+  level:
+    org:
+      springframework:
+        web: debug
