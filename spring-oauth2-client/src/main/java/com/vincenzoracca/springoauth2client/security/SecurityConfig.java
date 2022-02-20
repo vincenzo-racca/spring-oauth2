@@ -1,14 +1,9 @@
-package com.polarbookshop.edgeservice.security;
+package com.vincenzoracca.springoauth2client.security;
 
 import com.hazelcast.core.HazelcastInstance;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.session.ReactiveMapSessionRepository;
-import org.springframework.session.ReactiveSessionRepository;
-import org.springframework.session.config.annotation.web.server.EnableSpringWebSession;
-import reactor.core.publisher.Mono;
-
+import com.hazelcast.map.IMap;
+import com.vincenzoracca.springoauth2client.listener.SessionHazelcastListener;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -22,14 +17,24 @@ import org.springframework.security.web.server.authentication.HttpStatusServerEn
 import org.springframework.security.web.server.authentication.logout.ServerLogoutSuccessHandler;
 import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
 import org.springframework.security.web.server.csrf.CsrfToken;
+import org.springframework.session.ReactiveMapSessionRepository;
+import org.springframework.session.ReactiveSessionRepository;
+import org.springframework.session.Session;
+import org.springframework.session.config.annotation.web.server.EnableSpringWebSession;
 import org.springframework.web.server.WebFilter;
+import reactor.core.publisher.Mono;
 
+//url login: {basePath}/oauth2/authorization/wso2
+//url logout: POST {basePath}/logout with form data: csrf=<CSRF_token>
 @EnableWebFluxSecurity
 @EnableSpringWebSession
 public class SecurityConfig {
 
-    @Autowired
-    private HazelcastInstance hazelcastInstance;
+    private final HazelcastInstance hazelcastInstance;
+
+    public SecurityConfig(HazelcastInstance hazelcastInstance) {
+        this.hazelcastInstance = hazelcastInstance;
+    }
 
     @Bean
     ServerOAuth2AuthorizedClientRepository authorizedClientRepository() {
@@ -38,10 +43,10 @@ public class SecurityConfig {
 
     @Bean
     ReactiveSessionRepository reactiveSessionRepository() {
-        return new ReactiveMapSessionRepository(hazelcastInstance.getMap("session-map"));
+        IMap<String, Session> map = hazelcastInstance.getMap("session-map");
+        map.addEntryListener(new SessionHazelcastListener(), false);
+        return new ReactiveMapSessionRepository(map);
     }
-
-    //url login: {basePath}/oauth2/authorization/wso2
 
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http, ReactiveClientRegistrationRepository clientRegistrationRepository) {

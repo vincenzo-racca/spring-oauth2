@@ -34,4 +34,5 @@ logging:
   level:
     org:
       springframework:
-        web: debug
+        web:
+          HttpLogging: trace
