@@ -47,8 +47,8 @@
     <UseTenantDomainInUsername>false</UseTenantDomainInUsername>
     <UseUserstoreDomainInRoles>true</UseUserstoreDomainInRoles>
     <UseUserstoreDomainInUsername>false</UseUserstoreDomainInUsername>
-    <SkipConsent>false</SkipConsent>
-    <skipLogoutConsent>false</skipLogoutConsent>
+    <SkipConsent>true</SkipConsent>
+    <skipLogoutConsent>true</skipLogoutConsent>
     <EnableAuthorization>false</EnableAuthorization>
   </LocalAndOutBoundAuthenticationConfig>
   <RequestPathAuthenticatorConfigs/>

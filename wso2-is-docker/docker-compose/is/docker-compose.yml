@@ -1,6 +1,7 @@
 version: '2.3'
 services:
   mysql:
+    platform: linux/x86_64
     image: mysql:5.7.29
     ports:
       - 3306
