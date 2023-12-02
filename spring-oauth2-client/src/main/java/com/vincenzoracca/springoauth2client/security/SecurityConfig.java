@@ -4,6 +4,7 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import com.vincenzoracca.springoauth2client.listener.SessionHazelcastListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -26,6 +27,7 @@ import reactor.core.publisher.Mono;
 
 //url login: {basePath}/oauth2/authorization/wso2
 //url logout: POST {basePath}/logout with form data: csrf=<CSRF_token>
+@Configuration
 @EnableWebFluxSecurity
 @EnableSpringWebSession
 public class SecurityConfig {

@@ -1,33 +1,32 @@
 package com.vincenzoracca.springresourceserver.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+@Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     String[] whiteList = {
-            "/v3/api-docs**",
-            "/configuration/ui",
-            "/swagger-resources/**",
-            "/configuration/security",
+            "/v3/api-docs/**",
             "/swagger-ui.html",
-            "/webjars/**"
+            "/swagger-ui/**"
     };
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeRequests(authorize -> authorize
-                        .antMatchers(whiteList).permitAll()
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(whiteList).permitAll()
                         .anyRequest().authenticated())
-                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .oauth2ResourceServer(oauth2Conf -> oauth2Conf.jwt(Customizer.withDefaults()))
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
